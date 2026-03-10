@@ -1,31 +1,36 @@
 function parse(packet) {
-  // bersihkan karakter tambahan
   packet = packet.replace(/[()]/g, "");
 
   if (!packet.includes("BR")) return null;
 
   try {
-    // ambil IMEI
     const imei = packet.substring(0, 12);
 
-    // regex koordinat
-    const match = packet.match(/(\d{4}\.\d+[NS])(\d{5}\.\d+[EW])/);
+    const match = packet.match(
+      /(\d{4}\.\d+[NS])(\d{5}\.\d+[EW])(\d+\.\d+)(\d+\.\d+)/,
+    );
 
     if (!match) return null;
 
     const latRaw = match[1];
     const lonRaw = match[2];
+    const speedRaw = match[3];
+    const courseRaw = match[4];
 
     const latitude = convertCoordinate(latRaw);
     const longitude = convertCoordinate(lonRaw);
+
+    const speed = parseFloat(speedRaw);
+    const course = parseFloat(courseRaw);
 
     return {
       imei,
       latitude,
       longitude,
+      speed,
+      course,
     };
   } catch (err) {
-    console.log("Parse error:", err);
     return null;
   }
 }

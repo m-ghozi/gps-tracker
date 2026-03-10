@@ -29,8 +29,16 @@ function startTcpServer(port) {
       }
 
       await db.query(
-        "INSERT INTO positions (device_id, latitude, longitude, device_time) VALUES (?, ?, ?, NOW())",
-        [device.id, parsed.latitude, parsed.longitude],
+        `INSERT INTO positions
+        (device_id, latitude, longitude, speed, course, device_time)
+        VALUES (?, ?, ?, ?, ?, NOW())`,
+        [
+          device.id,
+          parsed.latitude,
+          parsed.longitude,
+          parsed.speed,
+          parsed.course,
+        ],
       );
 
       console.log("Position saved");
