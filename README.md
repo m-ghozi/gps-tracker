@@ -120,6 +120,10 @@ Provides the historical location records for a specific GPS tracker by its IMEI.
 **Path Parameters**:
 - `imei` - The IMEI of the device (Example: `123456789012345`)
 
+**Query Parameters (Optional)**:
+- `start` - Filter records from this datetime (Format: `YYYY-MM-DD HH:mm:ss`, e.g., `2023-11-20 00:00:00`)
+- `end` - Filter records up to this datetime (Format: `YYYY-MM-DD HH:mm:ss`, e.g., `2023-11-20 23:59:59`)
+
 **Response**:
 ```json
 [

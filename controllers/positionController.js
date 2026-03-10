@@ -38,14 +38,29 @@ async function getLatestPositions(req, res) {
 async function getPositionHistory(req, res) {
   try {
     const { imei } = req.params;
-    const query = `
+    const { start, end } = req.query;
+
+    let query = `
       SELECT p.latitude, p.longitude, p.speed, p.course, p.device_time
       FROM positions p
       JOIN devices d ON p.device_id = d.id
       WHERE d.imei = ?
-      ORDER BY p.device_time DESC
     `;
-    const [history] = await db.query(query, [imei]);
+    const queryParams = [imei];
+
+    if (start) {
+      query += ` AND p.device_time >= ?`;
+      queryParams.push(start);
+    }
+    
+    if (end) {
+      query += ` AND p.device_time <= ?`;
+      queryParams.push(end);
+    }
+
+    query += ` ORDER BY p.device_time DESC`;
+
+    const [history] = await db.query(query, queryParams);
     res.json(history);
   } catch (error) {
     console.error("Error fetching position history:", error);
