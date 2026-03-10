@@ -12,7 +12,7 @@ function parse(packet) {
       latitude: latRaw,
       longitude: lonRaw,
     };
-  } catch (e) {
+  } catch (err) {
     return null;
   }
 }
