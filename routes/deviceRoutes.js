@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const { registerDevice } = require("../controllers/deviceController");
+const { registerDevice, getDevices } = require("../controllers/deviceController");
 
 router.post("/", registerDevice);
+router.get("/", getDevices);
 
 module.exports = router;
