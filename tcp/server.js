@@ -2,6 +2,9 @@ const net = require("net");
 const parser = require("./parser");
 const db = require("../config/database");
 const { getDeviceByIMEI } = require("../models/deviceModel");
+const parsed = parser.parse(message);
+
+console.log("PARSED:", parsed);
 
 function startTcpServer(port) {
   const server = net.createServer(async (socket) => {
