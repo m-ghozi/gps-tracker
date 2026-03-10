@@ -1,8 +1,10 @@
 const net = require("net");
 const parser = require("./parser");
+const db = require("../config/database");
+const { getDeviceByIMEI } = require("../models/deviceModel");
 
 function startTcpServer(port) {
-  const server = net.createServer((socket) => {
+  const server = net.createServer(async (socket) => {
     console.log("Tracker connected:", socket.remoteAddress);
 
     socket.on("data", async (data) => {
@@ -12,18 +14,26 @@ function startTcpServer(port) {
 
       const parsed = parser.parse(message);
 
-      if (parsed) {
-        console.log("GPS:", parsed);
-      }
-    });
+      if (!parsed) return;
 
-    socket.on("end", () => {
-      console.log("Tracker disconnected");
+      const device = await getDeviceByIMEI(parsed.imei);
+
+      if (!device) {
+        console.log("Device not registered:", parsed.imei);
+        return;
+      }
+
+      await db.query(
+        "INSERT INTO positions (device_id, latitude, longitude, device_time) VALUES (?, ?, ?, NOW())",
+        [device.id, parsed.latitude, parsed.longitude],
+      );
+
+      console.log("Position saved");
     });
   });
 
   server.listen(port, () => {
-    console.log("TCP GPS Server running on port", port);
+    console.log("GPS TCP Server running on port", port);
   });
 }
 
