@@ -16,7 +16,10 @@ function startTcpServer(port) {
 
       console.log("PARSED:", parsed);
 
-      if (!parsed) return;
+      if (!parsed || isNaN(parsed.latitude) || isNaN(parsed.longitude)) {
+        console.log("Invalid GPS data");
+        return;
+      }
 
       const device = await getDeviceByIMEI(parsed.imei);
 
