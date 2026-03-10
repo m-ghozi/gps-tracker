@@ -1,4 +1,7 @@
 function parse(packet) {
+  // hapus karakter kurung
+  packet = packet.replace("(", "").replace(")", "");
+
   if (!packet.includes("BR")) return null;
 
   try {
